@@ -19,8 +19,8 @@ def bataille():
         for i1 in range(0, escarmoucheDepth+1):       # toutes les cartes engagées dans l'escarmouche
             jeux[vainqueur].append(jeux[perdant][0])    # le vainqueur récupère la 1er carte du jeu du perdant
             jeux[vainqueur].append(jeux[vainqueur][0])  # le vainqueur récupère la 1er carte du jeu du gagnant
-            del jeux[vainqueur][0]                      # la 1ere carte du jeu du perdant est supprimé
-            del jeux[perdant][0]                        # la 1ere carte du jeu du perdant est supprimé
+            del jeux[vainqueur][0]                      # la 1ere carte du jeu du perdant est supprimée
+            del jeux[perdant][0]                        # la 1ere carte du jeu du perdant est supprimée
         return jeux
 
     def escarmouche(jeux):
@@ -38,7 +38,7 @@ def bataille():
             jeux = 0  # bataille à sec donc pat et stop
         return jeux
 
-    while jeux != 0 and len(jeux[0]) > 0 and len(jeux[1]) > 0:  # fait des pli tant qu'il y a pas de gagnant
+    while jeux != 0 and len(jeux[0]) > 0 and len(jeux[1]) > 0:  # fait des plis tant qu'il y a pas de gagnant
         nombre_plis += 1
         if jeux[0][0] > jeux[1][0]:    # 0 gagne le plis
             jeux[0].append(jeux[1][0])     # le gagnant récupère la carte du perdant
