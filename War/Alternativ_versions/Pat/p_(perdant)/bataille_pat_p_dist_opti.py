@@ -28,7 +28,7 @@ def bataille():
         escarmoucheDepth = 0
         try:
             while jeux[0][escarmoucheDepth] == jeux[1][escarmoucheDepth]:
-                """tant que les cartes impaires sont on augmente l'escarmoucheDepth"""
+                """tant que les cartes impaires sont égales on augmente l'escarmoucheDepth"""
                 escarmoucheDepth += 2
             if jeux[0][escarmoucheDepth] > jeux[1][escarmoucheDepth]:    # 0 gagne l'escarmouche
                 jeux = redistribute(jeux, 0, 1, escarmoucheDepth)
