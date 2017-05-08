@@ -1,5 +1,6 @@
+# This file isn't necessary
 def distribution(paquet, n_p, cibles=42):
-    """ distribue les elemet de la liste paquet dans la liste de liste
+    """ distribue les elements de la liste paquet dans la liste de liste
     cibles contenant n_p list (si cibles n'est pas specifie il est cree)"""
     if cibles == 42:
         cibles = [[]]
