@@ -1,10 +1,10 @@
 # -*-coding:utf8;-*-
 from timeit import default_timer as timer
 import numpy as np
-from multiprocessing import Pool
 import os
 import sqlite3
-import pandasDataAnalysis
+import pickle
+# import pandasDataAnalysis
 # import cProfile
 
 
@@ -12,7 +12,7 @@ class Battle:
     def __init__(self):
         self.nb_pli = 0
         self.distribute()
-        self.base_game = (list(self.player1), list(self.player2))
+        self.base_game = (tuple(self.player1), tuple(self.player2))
 
     def distribute(self):
         cards = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 0, 1, 2, 3, 4,
@@ -50,15 +50,15 @@ class Battle:
             else:
                 self.escarmouche()
         if len(self.player2) <= 0 < len(self.player1):
-            return 1, self.nb_pli, list(self.base_game)
+            return 1, self.nb_pli, tuple(self.base_game)
         elif len(self.player1) <= 0 < len(self.player2):
-            return 2, self.nb_pli, list(self.base_game)
+            return 2, self.nb_pli, tuple(self.base_game)
         elif len(self.player2) <= 0 and len(self.player1) <= 0:
-            return 3, self.nb_pli, list(self.base_game)
+            return 3, self.nb_pli, tuple(self.base_game)
 
 
 def run(x):
-    conn = sqlite3.connect('data.db', timeout=1000)
+    conn = sqlite3.connect('data.db')
     c = conn.cursor()
     try:
         c.execute('''CREATE TABLE war
@@ -70,8 +70,8 @@ def run(x):
     for i in range(x):
         b = Battle()
         result = b.pli()
-        c.execute("INSERT INTO war VALUES (?, ?, ?, ?)", (np.array(result[2][0]), np.array(result[2][1]), result[0],
-                                                          result[1]))
+        c.execute("INSERT INTO war VALUES (?, ?, ?, ?)", (pickle.dumps(result[2][0]),
+                                                          pickle.dumps(result[2][1]), result[0], result[1]))
     conn.commit()
     conn.close()
 
@@ -91,14 +91,12 @@ if __name__ == '__main__':
     #     print("ValueError: you muss enter an integer!\nNumber of battles set to 100000.")
     #     nbBattleToSimulate = 100000
 
-    nbBattleToSimulate = 100000
+    nbBattleToSimulate = 700000
 
-    pool = Pool(8)
     start = timer()
 
     # cProfile.run('run({})'.format(nbBattleToSimulate))
-    # run(nbBattleToSimulate)
-    pool.map(run, [nbBattleToSimulate // 8] * 8)
+    run(nbBattleToSimulate)
 
     runtime = timer() - start
 
@@ -154,12 +152,12 @@ if __name__ == '__main__':
     # print("\tNumber of pli min: {}\n".format(min_pli))
     # print('-' * 66)
 
-    print(">>> reading...")
-    df1 = pandasDataAnalysis.read_data_player1()
-    df2 = pandasDataAnalysis.read_data_player2()
-    print(df1.head(), df2.head())
-    print(">>> describing...")
-    print(df1.describe(), df2.describe())
-
+    # print(">>> reading...")
+    # df1 = pandasDataAnalysis.read_data_player1()
+    # df2 = pandasDataAnalysis.read_data_player2()
+    # print(df1.head(), df2.head())
+    # print(">>> describing...")
+    # print(df1.describe(), df2.describe())
+    #
     print("\nFrom: Zee_GabByte & Zee_ImperoTemp")
     os.system("pause")
