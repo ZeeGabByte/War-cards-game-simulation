@@ -1,3 +1,4 @@
+# -*-coding:utf8;-*-
 import sqlite3
 from matplotlib import pyplot as plt
 from matplotlib import style
@@ -9,20 +10,20 @@ def create_stats_from_sql_with_pd(low_born, up_born):
     Create stats from SQLite3 data base with pandas
         if low_born == 'lower': take the min in data base
         if up_born == 'upper': take the max in data base
-        if nb_pli_total == None: find it in data base
-    Return a list of the frequency [plot] (in %) of a war of x pli (with x = range(low_born, up_born + 1))
+        if nb_trick_total == None: find it in data base
+    Return a list of the frequency [plot] (in %) of a war of x trick (with x = range(low_born, up_born + 1))
     """
 
     conn = sqlite3.connect('data.db')
-    df0 = pd.read_sql_query("SELECT nb_pli FROM war", conn)
+    df0 = pd.read_sql_query("SELECT nb_trick FROM war", conn)
     conn.close()
 
-    nb_pli_total = df0['nb_pli'].sum()
+    nb_trick_total = df0['nb_trick'].sum()
 
     plot = []
     for i in range(low_born, up_born + 1):
-        temporary_df = df0[(df0['nb_pli'] == i)]
-        plot.append(temporary_df['nb_pli'].count() / nb_pli_total * 100)
+        temporary_df = df0[(df0['nb_trick'] == i)]
+        plot.append(temporary_df['nb_trick'].count() / nb_trick_total * 100)
     return plot
 
 
@@ -38,9 +39,9 @@ if create_stats is True:
     stats = create_stats_from_sql_with_pd(lower_born, upper_born)
     x = list(range(lower_born, upper_born + 1))
 
-    df = pd.DataFrame({'nb_pli': x, 'probability': stats})
+    df = pd.DataFrame({'nb_trick': x, 'probability': stats})
 
-    df.set_index('nb_pli', inplace=True)
+    df.set_index('nb_trick', inplace=True)
 
     df.to_csv(r'C:\Users\admin\PycharmProjects\Bataille\War\data\data {}.csv'
               .format((lower_born, upper_born + 1)), compression='bz2')
@@ -49,7 +50,7 @@ if create_stats is True:
 df = pd.read_csv(r'C:\Users\admin\PycharmProjects\Bataille\War\data\data {}.csv'
                  .format((lower_born, upper_born + 1)), compression='bz2')
 
-x = list(df['nb_pli'])
+x = list(df['nb_trick'])
 y = list(df['probability'])
 
 # display the graph
