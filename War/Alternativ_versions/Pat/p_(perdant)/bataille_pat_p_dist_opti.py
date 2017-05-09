@@ -1,5 +1,6 @@
 from time import time as ti
-import numpy as np
+from numpy import random
+from affichage_bataille import affichage
 
 
 def bataille():
@@ -7,7 +8,7 @@ def bataille():
         """distribue les cartes"""
         cards = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,
                  0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
-        np.random.shuffle(cards)
+        random.shuffle(cards)
         return [cards[:26], cards[26:]]
 
     nombre_plis = 0
@@ -58,31 +59,6 @@ def bataille():
         return 2, nombre_plis, jeu_base                 # on renvoie 2
     else:                                            # égalité
         return 3, nombre_plis, jeu_base                 # on renvoie 3
-
-
-def affichage(result_full, nombre_bataille, t):
-    """permet d'afficher les résultat et les statistiques"""
-    nombre_pli_total = sum(result_full[1])
-    print("=" * 60 + "\n")
-    print("{nb_b} batailles simulées soit {nb_p} plis".format(nb_b=nombre_bataille, nb_p=nombre_pli_total))
-    print("{v_b} bataille par seconde soit {v_p} plis par seconde".format(v_b=nombre_bataille / t,
-                                                                          v_p=nombre_pli_total / t))
-
-    print("\n" + "-" * 60 + "\n")
-
-    print("Porcentage de résulats:\n    {v1} % de victoire de 1\n    {v2} % de victoire de 2\n     {eg} % d'égalité"
-          .format(v1=result_full[0][0] / nombre_bataille * 100, v2=result_full[0][1] / nombre_bataille * 100,
-                  eg=result_full[0][2] / nombre_bataille * 100))
-
-    print("\n" + "-" * 60 + "\n")
-
-    print("Statistiques:")
-    print("    Nombre de plis maximum: {max}\n    Nombre de plis minimum: {min}\n    "
-          "Nombre de plis moyen: {moy}\n    Nombre de plis median: {med}"
-          .format(max=max(result_full[1]), min=min(result_full[1]), moy=np.mean(result_full[1]),
-                  med=np.median(result_full[1])))
-
-    print("\n" + "=" * 60)
 
 result_full = [[0, 0, 0], [], []]
 """"[victoire 1, victoire 2, égalité], [nombre de plis de chaque parties], [jeux de base]"""
