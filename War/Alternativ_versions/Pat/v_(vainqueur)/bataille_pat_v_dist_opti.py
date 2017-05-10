@@ -2,6 +2,7 @@ from time import time as ti
 from numpy import random
 from affichage_bataille import affichage
 
+
 def bataille():
     def distribute():
         """distribue les cartes"""
