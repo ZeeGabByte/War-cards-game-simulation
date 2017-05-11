@@ -6,72 +6,12 @@ import os
 import sqlite3
 import pickle
 from multiprocessing import Pool
+import Cython_War
 # import pandasDataAnalysis
 # import cProfile
 
 
-class Battle:
-    def __init__(self):
-        self.nb_trick = 0
-        self.escarmoucheDepth = 0
-        self.player1 = []
-        self.player2 = []
-        self.distribute()
-        self.base_deck = (tuple(self.player1), tuple(self.player2))
-
-    def distribute(self):
-        deck = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 0, 1, 2, 3, 4,
-                5, 6, 7, 8, 9, 10, 11, 12, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
-        np.random.shuffle(deck)
-        self.player1 = deck[:26]
-        self.player2 = deck[26:]
-
-    def escarmouche(self):
-        self.escarmoucheDepth = 0
-        try:
-            while self.player1[self.escarmoucheDepth] == self.player2[self.escarmoucheDepth]:
-                self.escarmoucheDepth += 2
-            if self.player1[self.escarmoucheDepth] > self.player2[self.escarmoucheDepth]:
-                redistribute(self.player1, self.player2, self.escarmoucheDepth)
-            elif self.player2[self.escarmoucheDepth] > self.player1[self.escarmoucheDepth]:
-                redistribute(self.player2, self.player1, self.escarmoucheDepth)
-        except IndexError:
-            self.player1 = []
-            self.player2 = []
-
-    def trick(self):
-        while len(self.player1) != 0 and len(self.player2) != 0:
-            self.nb_trick += 1
-            if self.player2[0] > self.player1[0]:
-                self.player2.append(self.player1[0])
-                self.player2.append(self.player2[0])
-                del self.player1[0]
-                del self.player2[0]
-            elif self.player1[0] > self.player2[0]:
-                self.player1.append(self.player2[0])
-                self.player1.append(self.player1[0])
-                del self.player1[0]
-                del self.player2[0]
-            else:
-                self.escarmouche()
-        if len(self.player2) <= 0 < len(self.player1):
-            return 1, self.nb_trick, tuple(self.base_deck)
-        elif len(self.player1) <= 0 < len(self.player2):
-            return 2, self.nb_trick, tuple(self.base_deck)
-        elif len(self.player2) <= 0 and len(self.player1) <= 0:
-            return 3, self.nb_trick, tuple(self.base_deck)
-
-
-def redistribute(winner, looser, depth):
-    for i in range(depth+1):
-        winner.append(looser[0])
-        winner.append(winner[0])
-        del winner[0]
-        del looser[0]
-
-
 def run(x, nb):
-    print('starting: {}'.format(nb))
     conn = sqlite3.connect('data\data{}.db'.format(nb))
     c = conn.cursor()
     try:
@@ -83,16 +23,13 @@ def run(x, nb):
 
     np.random.seed()
 
-    print('running: {}'.format(nb))
-
     for i in range(x):
-        b = Battle()
+        b = Cython_War.Battle()
         result = b.trick()
         c.execute("""INSERT INTO war VALUES (?, ?, ?, ?)""", (pickle.dumps(result[2][0]),
                                                               pickle.dumps(result[2][1]), result[0], result[1]))
     conn.commit()
     conn.close()
-    print('done: {}'.format(nb))
 
 
 if __name__ == '__main__':

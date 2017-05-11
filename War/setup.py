@@ -6,6 +6,6 @@ import numpy
 
 setup(
     cmdclass={'build_ext': build_ext},
-    ext_modules=[Extension("War", ["CythonTest.pyx"])],
+    ext_modules=[Extension("Cython_War", [r"C:\Users\admin\PycharmProjects\Bataille\War\CythonModule.pyx"])],
     include_dirs=[numpy.get_include()]
 )
