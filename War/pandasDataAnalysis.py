@@ -1,3 +1,4 @@
+# -*-coding:utf8;-*-
 import pandas as pd
 from matplotlib import pyplot as plt
 from matplotlib import style
