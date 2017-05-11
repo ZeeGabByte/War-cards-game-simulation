@@ -98,7 +98,7 @@ if __name__ == '__main__':
     start = timer()
 
     # cProfile.run('run({})'.format(nbBattleToSimulate))
-    # run(nbBattleToSimulate)
+    run(nbBattleToSimulate)
 
     runtime = timer() - start
 
