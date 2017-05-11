@@ -39,7 +39,7 @@ def model2(players_deck):
 
 
 def import_data():
-    conn = sqlite3.connect('data.db')
+    conn = sqlite3.connect('data\data_merged.db')
     data_frame = pd.read_sql_query(
         """SELECT base_deck_player1, base_deck_player2, victory FROM war WHERE victory!=3 LIMIT {}""".format(X), conn)
     conn.close()

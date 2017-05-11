@@ -1,29 +1,24 @@
 # -*-coding:utf8;-*-
 import pandas as pd
-from matplotlib import pyplot as plt
-from matplotlib import style
 import sqlite3
-import numpy as np
-
-
-style.use('fivethirtyeight')
 
 
 def read_data_nb_pli():
-    conn = sqlite3.connect('data.db')
+    conn = sqlite3.connect('data\data_merged.db')
     df = pd.read_sql_query("SELECT nb_pli FROM war", conn)
     conn.close()
     return df
 
 
 def read_data_player1():
-    conn = sqlite3.connect('data.db')
+    conn = sqlite3.connect('data\data_merged.db')
     data_frame = pd.read_sql_query("SELECT base_game_player1 FROM war", conn)
     conn.close()
     return data_frame
 
+
 def read_data_player2():
-    conn = sqlite3.connect('data.db')
+    conn = sqlite3.connect('data\data_merged.db')
     data_frame = pd.read_sql_query("SELECT base_game_player2 FROM war", conn)
     conn.close()
     return data_frame

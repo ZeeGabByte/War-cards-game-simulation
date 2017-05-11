@@ -103,17 +103,17 @@ if __name__ == '__main__':
         nbBattleToSimulate = 100000
 
     try:
-        nb_process = int(input("Number of processes: "))
+        nb_processes = int(input("Number of processes: "))
     except ValueError:
-        print("ValueError: you muss enter an integer!\nNumber of process set to 1.")
-        nb_process = 1
+        print("ValueError: you muss enter an integer!\nNumber of processes set to 1.")
+        nb_processes = 1
     # delete this security if you have more then 8 threads or set 8 to the number of threads you have
-    if nb_process > 8:
-        nb_process = 1
+    if nb_processes > 8:
+        nb_processes = 1
 
-    pool = Pool(processes=nb_process)
+    pool = Pool(processes=nb_processes)
 
-    nbBattleToSimulate_per_process = nbBattleToSimulate // nb_process
+    nbBattleToSimulate_per_process = nbBattleToSimulate // nb_processes
 
     start = timer()
 

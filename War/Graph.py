@@ -14,7 +14,7 @@ def create_stats_from_sql_with_pd(low_born, up_born):
     Return a list of the frequency [plot] (in %) of a war of x trick (with x = range(low_born, up_born + 1))
     """
 
-    conn = sqlite3.connect('data.db')
+    conn = sqlite3.connect('data\data_merged.db')
     df0 = pd.read_sql_query("SELECT nb_trick FROM war", conn)
     conn.close()
 

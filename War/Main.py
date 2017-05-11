@@ -70,7 +70,7 @@ def redistribute(winner, looser, depth):
 
 
 def run(x):
-    conn = sqlite3.connect('data\data.db')
+    conn = sqlite3.connect('data\data0.db')
     c = conn.cursor()
     try:
         c.execute("""CREATE TABLE war
