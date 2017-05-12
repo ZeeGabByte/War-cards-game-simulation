@@ -1,10 +1,11 @@
 # -*-coding:utf8;-*-
-# war_pat_p
+# war_pat_v
 from timeit import default_timer as timer
 import numpy as np
 import os
 import sqlite3
 import pickle
+from multiprocessing import Pool
 # import pandasDataAnalysis
 # import cProfile
 
@@ -42,13 +43,13 @@ class Battle:
         while len(self.player1) != 0 and len(self.player2) != 0:
             self.nb_trick += 1
             if self.player2[0] > self.player1[0]:
-                self.player2.append(self.player1[0])
                 self.player2.append(self.player2[0])
+                self.player2.append(self.player1[0])
                 del self.player1[0]
                 del self.player2[0]
             elif self.player1[0] > self.player2[0]:
-                self.player1.append(self.player2[0])
                 self.player1.append(self.player1[0])
+                self.player1.append(self.player2[0])
                 del self.player1[0]
                 del self.player2[0]
             else:
@@ -63,14 +64,14 @@ class Battle:
 
 def redistribute(winner, looser, depth):
     for i in range(depth+1):
-        winner.append(looser[0])
         winner.append(winner[0])
+        winner.append(looser[0])
         del winner[0]
         del looser[0]
 
 
-def run(x):
-    conn = sqlite3.connect('D:\data\data0.db')
+def run(x, nb):
+    conn = sqlite3.connect('D:\data\data{}.db'.format(nb))
     c = conn.cursor()
     try:
         c.execute("""CREATE TABLE war
@@ -78,6 +79,8 @@ def run(x):
         conn.commit()
     except sqlite3.OperationalError:
         pass
+
+    # np.random.seed()
 
     for i in range(x):
         b = Battle()
@@ -95,16 +98,35 @@ if __name__ == '__main__':
         print("ValueError: you muss enter an integer!\nNumber of wars set to 100000.")
         nbBattleToSimulate = 100000
 
+    try:
+        nb_processes = int(input("Number of processes: "))
+    except ValueError:
+        print("ValueError: you muss enter an integer!\nNumber of processes set to 1.")
+        nb_processes = 1
+    # delete this security if you have more then 8 threads or set 8 to the number of threads you have
+    if nb_processes > 8:
+        nb_processes = 1
+
+    pool = Pool(processes=nb_processes)
+
+    nbBattleToSimulate_per_process = nbBattleToSimulate // nb_processes
+
     start = timer()
 
     # cProfile.run('run({})'.format(nbBattleToSimulate))
-    run(nbBattleToSimulate)
+
+    map_args = []
+    for name in range(nb_processes):
+        map_args.append((nbBattleToSimulate_per_process, name))
+
+    pool.starmap(run, map_args)
+    # run(nbBattleToSimulate)
 
     runtime = timer() - start
 
     # Print stats de ce run
     print('\n' + '-' * 66 + '\n')
-    print("\t{} wars have been simulated:\n".format(nbBattleToSimulate // 8 * 8))
+    print("\t{} wars have been simulated:\n".format(nbBattleToSimulate // nb_processes * nb_processes))
     print("\tOperation took {} seconds.".format(runtime))
     print("\tNumber of battle per seconds: {} wars/s".format(nbBattleToSimulate / runtime))
     print('\n' + '-' * 66 + '\n')

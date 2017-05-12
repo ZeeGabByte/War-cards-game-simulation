@@ -71,8 +71,7 @@ def redistribute(winner, looser, depth):
 
 
 def run(x, nb):
-    print('starting: {}'.format(nb))
-    conn = sqlite3.connect('data\data{}.db'.format(nb))
+    conn = sqlite3.connect('D:\data\data{}.db'.format(nb))
     c = conn.cursor()
     try:
         c.execute("""CREATE TABLE war
@@ -81,9 +80,7 @@ def run(x, nb):
     except sqlite3.OperationalError:
         pass
 
-    np.random.seed()
-
-    print('running: {}'.format(nb))
+    # np.random.seed()
 
     for i in range(x):
         b = Battle()
@@ -92,7 +89,6 @@ def run(x, nb):
                                                               pickle.dumps(result[2][1]), result[0], result[1]))
     conn.commit()
     conn.close()
-    print('done: {}'.format(nb))
 
 
 if __name__ == '__main__':
@@ -118,17 +114,19 @@ if __name__ == '__main__':
     start = timer()
 
     # cProfile.run('run({})'.format(nbBattleToSimulate))
-    pool.starmap(run, [(nbBattleToSimulate_per_process, 0), (nbBattleToSimulate_per_process, 1),
-                       (nbBattleToSimulate_per_process, 2), (nbBattleToSimulate_per_process, 3),
-                       (nbBattleToSimulate_per_process, 4), (nbBattleToSimulate_per_process, 5),
-                       (nbBattleToSimulate_per_process, 6), (nbBattleToSimulate_per_process, 7)])
+
+    map_args = []
+    for name in range(nb_processes):
+        map_args.append((nbBattleToSimulate_per_process, name))
+
+    pool.starmap(run, map_args)
     # run(nbBattleToSimulate)
 
     runtime = timer() - start
 
     # Print stats de ce run
     print('\n' + '-' * 66 + '\n')
-    print("\t{} wars have been simulated:\n".format(nbBattleToSimulate // 8 * 8))
+    print("\t{} wars have been simulated:\n".format(nbBattleToSimulate // nb_processes * nb_processes))
     print("\tOperation took {} seconds.".format(runtime))
     print("\tNumber of battle per seconds: {} wars/s".format(nbBattleToSimulate / runtime))
     print('\n' + '-' * 66 + '\n')

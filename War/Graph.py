@@ -14,44 +14,44 @@ def create_stats_from_sql_with_pd(low_born, up_born):
     Return a list of the frequency [plot] (in %) of a war of x trick (with x = range(low_born, up_born + 1))
     """
 
-    conn = sqlite3.connect('data\data_merged.db')
+    conn = sqlite3.connect('D:\data\data_merged.db')
     df0 = pd.read_sql_query("SELECT nb_trick FROM war", conn)
     conn.close()
 
-    nb_trick_total = df0['nb_trick'].sum()
+    print("Number of wars used: {}".format(df0.count()[0]))
+
+    nb_war_total = df0['nb_trick'].count()
 
     plot = []
     for i in range(low_born, up_born + 1):
         temporary_df = df0[(df0['nb_trick'] == i)]
-        plot.append(temporary_df['nb_trick'].count() / nb_trick_total * 100)
+        plot.append(temporary_df['nb_trick'].count() / nb_war_total * 100)
     return plot
 
-
-create_stats = input("Generate stats ([y]/n): ")
-if create_stats.upper()[0] == 'Y':
-    create_stats = True
 
 lower_born = 0
 upper_born = 3000
 
-if create_stats is True:
-    # create stats from SQLite3 data base with pandas and export data to csv
-    stats = create_stats_from_sql_with_pd(lower_born, upper_born)
-    x = list(range(lower_born, upper_born + 1))
+# create stats from SQLite3 data base with pandas and export data to csv
+stats = create_stats_from_sql_with_pd(lower_born, upper_born)
 
-    df = pd.DataFrame({'nb_trick': x, 'probability': stats})
+x = list(range(lower_born, upper_born + 1))
+y = stats
 
-    df.set_index('nb_trick', inplace=True)
+print(sum(y))
 
-    df.to_csv(r'C:\Users\admin\PycharmProjects\Bataille\War\data\data {}.csv'
-              .format((lower_born, upper_born + 1)), compression='bz2')
+y0 = []
+y1 = []
+x0 = []
+x1 = []
 
-# import data from csv
-df = pd.read_csv(r'C:\Users\admin\PycharmProjects\Bataille\War\data\data {}.csv'
-                 .format((lower_born, upper_born + 1)), compression='bz2')
-
-x = list(df['nb_trick'])
-y = list(df['probability'])
+for index in range(len(x)):
+    if x[index] % 2 == 0:
+        y0.append(y[index])
+        x0.append(x[index])
+    else:
+        y1.append(y[index])
+        x1.append(x[index])
 
 # display the graph
 style.use('ggplot')
@@ -59,7 +59,8 @@ style.use('ggplot')
 fig = plt.figure()
 ax1 = plt.subplot2grid((1, 1), (0, 0))
 
-ax1.plot(x, y, 'b', linewidth=1.0)
+ax1.plot(x0, y0, 'b', linewidth=1.0)
+ax1.plot(x1, y1, 'r', linewidth=1.0)
 
 ax1.set_xticks(range(lower_born, upper_born, (upper_born - lower_born) // 20))
 plt.subplots_adjust(left=0.03, bottom=0.03, right=1.0, top=1.0, wspace=0.2, hspace=0)

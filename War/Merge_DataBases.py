@@ -1,8 +1,8 @@
-# merge the data bases created with a multi processes version into data\data_merged.db
+# merge the data bases created with a multi processes version into D:\data\data_merged.db
 import sqlite3
 
 
-conn = sqlite3.connect('data\data_merged.db')
+conn = sqlite3.connect('D:\data\data_merged.db')
 c = conn.cursor()
 try:
     c.execute("""CREATE TABLE war
@@ -18,7 +18,8 @@ except ValueError:
     nb_db = 1
 
 for i in range(nb_db):
-    c.execute("""ATTACH 'data\data0.db' AS db_to_merge{}""".format(i))
+    c.execute("""ATTACH 'D:\data\data{}.db' AS db_to_merge{}""".format(i, i))
     c.execute("""INSERT INTO main.war SELECT * FROM db_to_merge{}.war""".format(i))
     conn.commit()
+
 conn.close()

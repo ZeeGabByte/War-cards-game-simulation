@@ -4,21 +4,21 @@ import sqlite3
 
 
 def read_data_nb_pli():
-    conn = sqlite3.connect('data\data_merged.db')
+    conn = sqlite3.connect('D:\data\data_merged.db')
     df = pd.read_sql_query("SELECT nb_pli FROM war", conn)
     conn.close()
     return df
 
 
 def read_data_player1():
-    conn = sqlite3.connect('data\data_merged.db')
+    conn = sqlite3.connect('D:\data\data_merged.db')
     data_frame = pd.read_sql_query("SELECT base_game_player1 FROM war", conn)
     conn.close()
     return data_frame
 
 
 def read_data_player2():
-    conn = sqlite3.connect('data\data_merged.db')
+    conn = sqlite3.connect('D:\data\data_merged.db')
     data_frame = pd.read_sql_query("SELECT base_game_player2 FROM war", conn)
     conn.close()
     return data_frame
@@ -40,5 +40,5 @@ if __name__ == '__main__':
     print(">>> describing...")
     print(df1.describe(), df2.describe())
 
-# df.to_csv(r'C:\Users\admin\PycharmProjects\Bataille\War\data\data_global.csv', compression='bz2')
-# df.to_csv(r'C:\Users\admin\PycharmProjects\Bataille\War\data\data_global.csv')
+# df.to_csv(r'D:\data\data_global.csv', compression='bz2')
+# df.to_csv(r'D:\data\data_global.csv')
