@@ -62,13 +62,13 @@ class Battle:
         if self.nb_trick > 10000:
             print("Infinite War?")
             print(self.base_deck)
-            return 4, self.nb_trick, tuple(self.base_deck)
+            return -1
         elif len(self.player2) <= 0 < len(self.player1):
-            return 1, self.nb_trick, tuple(self.base_deck)
+            return self.nb_trick
         elif len(self.player1) <= 0 < len(self.player2):
-            return 2, self.nb_trick, tuple(self.base_deck)
+            return self.nb_trick
         elif len(self.player2) <= 0 and len(self.player1) <= 0:
-            return 3, self.nb_trick, tuple(self.base_deck)
+            return self.nb_trick
 
 
 @cython.boundscheck(False)  # turn off bounds-checking for entire function

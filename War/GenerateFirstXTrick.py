@@ -24,7 +24,7 @@ class Battle:
             self.player2 = []
 
     def trick(self):
-        while len(self.player1) != 0 and len(self.player2) != 0 and self.nb_trick < self.limit_trick:
+        while self.player1 and self.player2 and self.nb_trick < self.limit_trick:
             self.nb_trick += 1
             if self.player2[0] > self.player1[0]:
                 self.player2.append(self.player1[0])

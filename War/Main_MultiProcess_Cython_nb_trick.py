@@ -5,7 +5,7 @@ from timeit import default_timer as timer
 import os
 import sqlite3
 from multiprocessing import Pool
-import Cython_War
+import Cython_War_Trick
 # import pandasDataAnalysis
 # import cProfile
 
@@ -20,9 +20,9 @@ def run(x, nb):
         pass
 
     for i in range(x):
-        b = Cython_War.Battle()
+        b = Cython_War_Trick.Battle()
         result = b.trick()
-        c.execute("""INSERT INTO war VALUES (?)""", [result[1]])
+        c.execute("""INSERT INTO war VALUES (?)""", [result])
     conn.commit()
     conn.close()
 
