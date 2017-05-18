@@ -4,18 +4,17 @@ from timeit import default_timer as timer
 # import numpy as np
 import os
 import sqlite3
-import pickle
 from multiprocessing import Pool
 import Cython_War
 # import pandasDataAnalysis
+# import cProfile
 
 
 def run(x, nb):
-    conn = sqlite3.connect('D:\data\data{}.db'.format(nb))
+    conn = sqlite3.connect(r'D:\data\nb_trick\data_trick{}.db'.format(nb))
     c = conn.cursor()
     try:
-        c.execute("""CREATE TABLE war
-                     (base_deck_player1 list, base_deck_player2 list, victory int, nb_trick int)""")
+        c.execute("""CREATE TABLE war (nb_trick int)""")
         conn.commit()
     except sqlite3.OperationalError:
         pass
@@ -23,8 +22,7 @@ def run(x, nb):
     for i in range(x):
         b = Cython_War.Battle()
         result = b.trick()
-        c.execute("""INSERT INTO war VALUES (?, ?, ?, ?)""", (pickle.dumps(result[2][0]),
-                                                              pickle.dumps(result[2][1]), result[0], result[1]))
+        c.execute("""INSERT INTO war VALUES (?)""", [result[1]])
     conn.commit()
     conn.close()
 
@@ -51,13 +49,11 @@ if __name__ == '__main__':
 
     start = timer()
 
-    # cProfile.run('run({})'.format(nbBattleToSimulate))
     map_args = []
     for name in range(nb_processes):
         map_args.append((nbBattleToSimulate_per_process, name))
 
     pool.starmap(run, map_args)
-    # run(nbBattleToSimulate)
 
     runtime = timer() - start
 

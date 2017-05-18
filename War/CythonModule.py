@@ -45,7 +45,7 @@ class Battle:
     @cython.boundscheck(False)  # turn off bounds-checking for entire function
     @cython.wraparound(False)  # turn off negative index wrapping for entire function
     def trick(self):
-        while len(self.player1) != 0 and len(self.player2) != 0:
+        while self.player1 and self.player2 and self.nb_trick <= 10000:
             self.nb_trick += 1
             if self.player2[0] > self.player1[0]:
                 self.player2.append(self.player1[0])
@@ -59,7 +59,10 @@ class Battle:
                 del self.player2[0]
             else:
                 self.escarmouche()
-        if len(self.player2) <= 0 < len(self.player1):
+        if self.nb_trick > 10000:
+            print("Infinite War?")
+            return 4, self.nb_trick, tuple(self.base_deck)
+        elif len(self.player2) <= 0 < len(self.player1):
             return 1, self.nb_trick, tuple(self.base_deck)
         elif len(self.player1) <= 0 < len(self.player2):
             return 2, self.nb_trick, tuple(self.base_deck)
